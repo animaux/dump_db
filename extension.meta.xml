@@ -2,7 +2,7 @@
 <extension id="dump_db" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
 	<name>Dump DB</name>
 	<description>Dump your database into a single SQL-file</description>
-	<repo type="github">https://github.com/nils-werner/dump_db</repo>
+	<repo type="github">https://github.com/animaux/dump_db</repo>
 	<url type="discuss">http://symphony-cms.com/discuss/thread/40987/</url>
 	<url type="issues">https://github.com/nils-werner/dump_db/issues</url>
 	<types>
@@ -15,6 +15,10 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="1.13" date="2025-07.30" min="2.7.10">
+			- PHP 8 compatibility
+			- ATTENTION: DB recovery untested!
+		</release>
 		<release version="1.12" date="2015-01-16" min="2.4">
 			- Symphony 2.5 compatibility
 		</release>

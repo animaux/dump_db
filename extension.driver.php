@@ -48,7 +48,7 @@
 		
 		public function appendAlert($context){
 			
-			if(!is_null($context['alert'])) return;
+			if(!is_null($context['alert'] ?? null)) return;
 			
 			// https://github.com/symphonycms/symphony-2/wiki/Migration-Guide-to-2.5-for-Developers#properties
 			if (is_callable(array('Symphony', 'Author'))) {
@@ -117,6 +117,7 @@
 			$div->appendChild($span);
 			
 			if(Symphony::Configuration()->get('restore', 'dump_db') !== 'yes') {
+			  $filename = $filename ?? null;
 				$div->appendChild(new XMLElement('p', __('Restoring needs to be enabled in <code>/manifest/config.php</code>.',array($this->path, $filename)), array('class' => 'help')));
 			}
 
@@ -202,8 +203,21 @@
 			$dump = new MySQLDump(Symphony::Database());
 			
 			$rows = Symphony::Database()->fetch("SHOW TABLES LIKE 'tbl_%';");
-			$rows = array_map (create_function ('$x', 'return array_values ($x);'), $rows);
-			$tables = array_map (create_function ('$x', 'return $x[0];'), $rows);
+			// $rows = array_map (create_function ('$x', 'return array_values ($x);'), $rows);
+			$rows = array_map (
+        function($x) {
+          return array_values ($x);
+        },
+        $rows			
+			);
+			
+			// $tables = array_map (create_function ('$x', 'return $x[0];'), $rows);
+			$tables = array_map (
+        function($x) {
+          return $x[0];
+        },
+        $rows
+      );
 			
 			$mode = NULL;
 			$mode = (isset($_POST['action']['dump']['authors']))? 'authors' : 'data';

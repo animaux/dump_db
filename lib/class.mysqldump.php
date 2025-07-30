@@ -42,7 +42,13 @@
 		}
 	
 		private function __dumpTableData($name, $fields, $condition=NULL){
-			$fieldList = join (', ', array_map (create_function ('$x', 'return "`$x`";'), array_keys ($fields)));
+			// $fieldList = join (', ', array_map (create_function ('$x', 'return "`$x`";'), array_keys ($fields)));
+			$fieldList = join (', ', array_map (
+        function($x) {
+          return "`$x`";
+        },
+        array_keys ($fields)
+			));
 			
 			$query = "SELECT {$fieldList} FROM `{$name}`";
 			
@@ -99,8 +105,23 @@
 			$query = 'SHOW TABLES' . (!is_null($match) ? " LIKE '$match'" : NULL);
 		
 			$rows = $this->_connection->fetch ($query);
-			$rows = array_map (create_function ('$x', 'return array_values ($x);'), $rows);
-			$tables = array_map (create_function ('$x', 'return $x[0];'), $rows);
+			
+			// $rows = array_map (create_function ('$x', 'return array_values ($x);'), $rows);
+			$rows = array_map (
+        function($x) {
+          return array_values ($x);
+        },
+        $rows			
+			);
+			
+			// $tables = array_map (create_function ('$x', 'return $x[0];'), $rows);
+			$tables = array_map (
+        function($x) {
+          return $x[0];
+        },
+        $rows
+      );
+			
 
 			$result = array();
 
@@ -117,7 +138,7 @@
 		private function __getTableType($table){
 			$query = sprintf("SHOW TABLE STATUS LIKE '%s'", addslashes($table));
 			$info = $this->_connection->fetch ($query);
-			return $info[0]['Type'];
+			return $info[0]['Type'] ?? null;
 		}
 
 		private function __getTableFields($table){
